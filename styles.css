@@ -1,0 +1,299 @@
+:root {
+    --bg-color: #050505; /* Deep black/grey background */
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa; /* Light grey for secondary text */
+    --accent-color: #8b5cf6; /* Purple accent */
+    --accent-hover: #7c3aed;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --font-family: 'Inter', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Hide overflow during startup animation to prevent scrollbars while zoomed */
+body.startup-anim {
+    overflow: hidden;
+}
+
+/* 3D Background Container */
+.background-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none; /* Allows user to click through the background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#parallax-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth follow */
+}
+
+.float-wrapper {
+    animation: float 6s ease-in-out infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Floating animation */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-25px); }
+    100% { transform: translateY(0px); }
+}
+
+.robot-bg {
+    width: 600px; /* Adjust based on image size */
+    max-width: 90vw;
+    height: auto;
+    object-fit: contain;
+    /* Startup state: Zoomed into the eyes */
+    transform: scale(3.5) translateY(5%); 
+    transition: transform 2.5s cubic-bezier(0.22, 1, 0.36, 1);
+    filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.4));
+}
+
+/* Zoomed out state (applied via JS) */
+.robot-bg.zoomed-out {
+    transform: scale(1) translateY(0);
+}
+
+/* Fallback Glow behind image */
+.fallback-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw;
+    height: 60vh;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(5, 5, 5, 0) 70%);
+    z-index: -2;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+    opacity: 0; /* Hidden initially */
+    transform: translateY(20px);
+    transition: opacity 1.5s ease 1s, transform 1.5s ease 1s; /* fade in with delay */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-wrapper.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.nav-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--text-secondary);
+}
+
+/* Global Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    border: 1px solid var(--accent-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background-color: #0a0a0a;
+    color: white;
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background-color: #111;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.nav-btn {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 85px); /* Subtract navbar height */
+    text-align: center;
+    padding: 2rem 5%;
+    position: relative;
+    z-index: 1;
+    flex-grow: 1;
+}
+
+.hero-content {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.badge {
+    background-color: rgba(139, 92, 246, 0.15);
+    color: #d8b4fe;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    backdrop-filter: blur(4px);
+}
+
+h1 {
+    font-size: 4.5rem;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -2px;
+}
+
+.hero p {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    line-height: 1.5;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.arrow {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+}
+
+/* Floating Buttons (Bottom Right) */
+.floating-buttons {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 100;
+}
+
+.floating-btn {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 3rem;
+    }
+    .nav-links {
+        display: none; /* Hide on mobile for preview simplicity */
+    }
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+    .floating-buttons {
+        bottom: 1rem;
+        right: 1rem;
+    }
+}
