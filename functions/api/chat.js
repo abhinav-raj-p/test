@@ -1,66 +1,62 @@
 export async function onRequestPost(context) {
     try {
+        // 1. Get the incoming text from your portfolio UI frontend
         const body = await context.request.json();
         const userMessage = body.message;
 
-        // 1. Setup Rate Limiting Configuration
-        const MAX_REQUESTS = 5;       // Max messages allowed
-        const WINDOW_SECONDS = 60;    // Time window frame
+        // 2. Setup Rate Limiting Metrics
+        const MAX_REQUESTS = 5;       // Messages allowed
+        const WINDOW_SECONDS = 60;    // Within 60 seconds
         
-        // Grab the user's anonymized IP address from Cloudflare's request metadata
+        // Fetch the user's IP to know who is texting the bot
         const userIp = context.request.headers.get("cf-connecting-ip") || "anonymous";
         const kvKey = `rate_limit:${userIp}`;
 
-        // Ensure our newly bound KV storage is online
+        // Verify that your KV storage was linked in the dashboard
         if (!context.env.RATELIMIT_KV) {
-            return new Response(JSON.stringify({ reply: "Database Configuration Error: Missing RATELIMIT_KV binding." }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            return Response.json({ reply: "Database Error: Missing RATELIMIT_KV dashboard binding." }, { status: 500 });
         }
 
-        // 2. Evaluate Rate Limit
+        // Evaluate user counts in the database
         let currentRequests = await context.env.RATELIMIT_KV.get(kvKey);
         
         if (currentRequests !== null) {
             currentRequests = parseInt(currentRequests, 10);
             if (currentRequests >= MAX_REQUESTS) {
-                return new Response(JSON.stringify({ 
+                return Response.json({ 
                     reply: "Slow down a bit! You've sent too many messages. Please try again in a minute." 
-                }), {
-                    status: 429, // Standard HTTP code for Too Many Requests
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                }, { status: 429 });
             }
-            // Increment request count by 1
+            // Increment visitor message count
             await context.env.RATELIMIT_KV.put(kvKey, (currentRequests + 1).toString(), { expirationTtl: WINDOW_SECONDS });
         } else {
-            // First time this IP is visiting within the active window, initialize to 1
+            // First message in this window frame, set to 1
             await context.env.RATELIMIT_KV.put(kvKey, "1", { expirationTtl: WINDOW_SECONDS });
         }
 
-        // 3. If within limits, execute the Native Workers AI Llama model
-        const payload = {
+        // 3. Chat Style Input (Adapted from your boilerplate template)
+        const chatInput = {
             messages: [
                 { 
-                    role: "system", 
-                    content: "You are a helpful portfolio assistant for Abhinav, an AI Developer and MCA student. Answer briefly and professionally about his projects." 
+                    role: 'system', 
+                    content: 'You are an AI portfolio assistant for Abhinav, an MCA student and AI Developer. Answer briefly and professionally about his projects like TruthLens and AI Study Buddy.' 
                 },
-                { role: "user", content: userMessage }
+                { role: 'user', content: userMessage }
             ]
         };
 
-        const aiResponse = await context.env.AI.run("@cf/meta/llama-3.2-3b-instruct", payload);
-        const replyText = aiResponse.response || "Sorry, I couldn't process that.";
+        // Run the Llama model on Cloudflare's free GPU matrix using your workspace binding
+        // Using the high-quality @cf/meta/llama-3-8b-instruct from your template
+        const aiResponse = await context.env.AI.run('@cf/meta/llama-3-8b-instruct', chatInput);
+        
+        // Grab the response text cleanly
+        const replyText = aiResponse.response || "Sorry, I couldn't formulate a response right now.";
 
-        return new Response(JSON.stringify({ reply: replyText }), {
-            headers: { 'Content-Type': 'application/json' }
-        });
+        // 4. Return clean JSON back to your glassmorphic UI container
+        return Response.json({ reply: replyText });
 
     } catch (error) {
-        return new Response(JSON.stringify({ reply: `System Error: ${error.message}` }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        // Fallback catch block to display accurate details if a network request breaks
+        return Response.json({ reply: `System Error: ${error.message}` }, { status: 500 });
     }
 }
