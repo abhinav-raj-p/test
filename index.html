@@ -3,70 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Design</title>
+    <title>Superpower Dashboard</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Google Fonts for Modern Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 </head>
-<body class="startup-anim">
-    <!-- Background Image Container -->
-    <div class="background-container">
-        <!-- Parallax Wrapper (handles mouse follow) -->
-        <div id="parallax-wrapper">
-            <!-- Float Wrapper (handles up and down float) -->
-            <div class="float-wrapper">
-                <!-- Image Wrapper (handles zoom) -->
-                <!-- Note: Please save your robot image as 'robot.png' in this folder -->
-                <img src="robot.png" alt="Robot Background" class="robot-bg" id="robot-img" onerror="this.src='https://via.placeholder.com/600x600/050505/ffffff?text=Save+your+image+as+robot.png'">
-            </div>
-        </div>
-        <!-- A fallback CSS glow -->
-        <div class="fallback-glow"></div>
-    </div>
-
-    <!-- Content Wrapper (Fades in after zoom) -->
-    <div class="content-wrapper" id="content">
-        <!-- Navigation -->
-        <nav class="navbar">
-            <div class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="4" width="6" height="6" rx="1" fill="white"/>
-                    <rect x="4" y="14" width="6" height="6" rx="1" fill="white"/>
-                    <rect x="14" y="14" width="6" height="6" rx="1" fill="white"/>
-                    <path d="M14 10L20 4M20 4H15M20 4V9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>XTRACT</span>
-            </div>
-            <div class="nav-links">
-                <a href="#">Home</a>
-                <a href="#">About</a>
-                <a href="#">Blog</a>
-                <a href="#">Contact</a>
-            </div>
-            <a href="#" class="btn btn-primary nav-btn">Book a call</a>
+<body>
+    <header class="navbar" id="navbar">
+        <div class="logo">superpower</div>
+        <nav class="nav-links">
+            <a href="#">MANIFESTO</a>
+            <a href="#">LOG IN</a>
+            <a href="#" class="btn-join">JOIN WAITLIST</a>
         </nav>
+    </header>
 
-        <!-- Main Hero Section -->
-        <main class="hero">
-            <div class="hero-content">
-                <span class="badge">New</span>
-                <h1>Intelligent Automation for<br>Modern Businesses.</h1>
-                <p>Xtract brings AI automation to your fingertips & streamline tasks.</p>
-                <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary">Get in touch <span class="arrow">↗</span></a>
-                    <a href="#" class="btn btn-secondary">View services</a>
+    <div class="white-overlay" id="white-overlay"></div>
+    <div class="spacer"></div>
+    
+    <canvas id="warpCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; pointer-events:none;"></canvas>
+
+    <section class="dashboard-section" id="dashboard-section">
+        <h1 class="main-heading fade-element">The most complete picture of<br>your health you've ever had</h1>
+        
+        <div class="ipad-mockup">
+            <div class="ipad-screen">
+                <div class="bento-grid">
+                    
+                    <div class="bento-card biomarkers-card fade-element">
+                        <div class="card-header">Biomarkers</div>
+                        <div class="card-value">345 biomarkers tested</div>
+                        <div class="spectrum-bar"></div>
+                    </div>
+                    
+                    <div class="bento-card bio-age-card fade-element">
+                        <div class="card-header">Biological age</div>
+                        <div class="card-value large">26</div>
+                        <div class="card-subtext">2.5 years younger than your chronological age</div>
+                        <div class="bg-silhouette"></div>
+                    </div>
+
+                    <div class="bento-card physical-health-card light-card fade-element">
+                        <div class="card-header split">
+                            <span>Physical health</span>
+                            <span>VO2</span>
+                        </div>
+                        <div class="arc-chart"></div>
+                        <div class="health-goals">
+                            <div class="date">July 1, 2024</div>
+                            <h3>Health goals selected by<br>Dr. Parekh for you</h3>
+                            <p>Hello Olivia, I've pinpointed these specific health goals to optimize your muscle tone and physical performance.</p>
+                            <div class="goal-item">
+                                <div class="goal-text"><strong>NMN</strong> 200mg weekly</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card out-of-range-card">
+                        <div class="card-header fade-element">12 out of range<br><span class="sub">71 in range</span></div>
+                        <div class="mini-ring" id="mini-ring-target">
+                            <canvas id="innerCanvas"></canvas>
+                        </div>
+                        <div class="legend fade-element">
+                            <span><span class="dot green"></span>Optimal</span>
+                            <span><span class="dot yellow"></span>In range</span>
+                            <span><span class="dot pink"></span>Out of range</span>
+                        </div>
+                    </div>
+
+                    <div class="bento-card chat-card light-card fade-element">
+                        <div class="doctor-profile">
+                            <div class="avatar"></div>
+                            <div>
+                                <div class="name">Dr. Kirten Parekh, MD</div>
+                                <div class="title">Superpower Longevity Physician</div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-bubble user">Hi Dr Kirten, What can I do to reduce my cortisol?</div>
+                        
+                        <div class="metric-attachment">
+                            <div>VO2<br><span class="sub">Optimal level</span></div>
+                            <div class="right"><span class="dot pink"></span> Out of range<br>22 ng/dl</div>
+                        </div>
+                        
+                        <div class="chat-bubble doctor">For sure! I'm here to answer any questions.</div>
+                    </div>
+                    
                 </div>
             </div>
-        </main>
-
-        <!-- Floating Buttons (Bottom Right) -->
-        <div class="floating-buttons">
-            <a href="#" class="btn btn-primary floating-btn">Use For Free <span class="arrow">↗</span></a>
-            <a href="#" class="btn btn-outline floating-btn">Another AI Template <span class="arrow">↗</span></a>
         </div>
-    </div>
+    </section>
 
-    <!-- Link the Javascript file -->
     <script src="script.js"></script>
 </body>
 </html>
