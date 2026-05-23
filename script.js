@@ -488,3 +488,68 @@ if (gmailForm) {
         window.open(gmailUrl, '_blank');
     });
 }
+
+// AI Chatbot Logic
+const chatFab = document.getElementById('chat-fab');
+const chatWindow = document.getElementById('chat-window');
+const closeChat = document.getElementById('close-chat');
+const chatInput = document.getElementById('chat-input');
+const sendChat = document.getElementById('send-chat');
+const chatMessages = document.getElementById('chat-messages');
+
+if (chatFab && chatWindow) {
+    chatFab.addEventListener('click', () => {
+        chatWindow.classList.add('open');
+        chatInput.focus();
+    });
+
+    closeChat.addEventListener('click', () => {
+        chatWindow.classList.remove('open');
+    });
+
+    const appendMessage = (text, sender) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}-message`;
+        msgDiv.textContent = text;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const handleSend = async () => {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        appendMessage(text, 'user');
+        chatInput.value = '';
+
+        // Add a temporary loading message
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'message ai-message';
+        loadingDiv.textContent = 'Thinking...';
+        chatMessages.appendChild(loadingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+
+            if (!response.ok) throw new Error('API Error');
+            const data = await response.json();
+            
+            loadingDiv.remove();
+            appendMessage(data.reply, 'ai');
+        } catch (error) {
+            loadingDiv.remove();
+            appendMessage('Sorry, I encountered an error connecting to the AI.', 'ai');
+            console.error('Chat error:', error);
+        }
+    };
+
+    sendChat.addEventListener('click', handleSend);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSend();
+    });
+}
