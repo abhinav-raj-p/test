@@ -500,3 +500,148 @@ body.scrolled .main-heading {
 .m-line {
     transition: stroke-opacity 0.5s ease;
 }
+
+/* Spacer for Contact */
+.spacer-contact {
+    height: 150vh;
+    width: 100%;
+}
+
+.contact-section {
+    position: fixed;
+    top: 0; /* JS translated */
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0a0a0a;
+    z-index: 120;
+    will-change: transform;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.contact-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    gap: 4rem;
+    color: #fff;
+}
+
+.contact-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.contact-info h2 {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.contact-info p {
+    color: #a0a0a0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 4rem;
+    max-width: 90%;
+}
+
+.contact-details h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.contact-details ul {
+    list-style: disc inside;
+    padding: 0;
+}
+
+.contact-details li {
+    margin-bottom: 0.8rem;
+    color: #d0d0d0;
+}
+
+.contact-details strong {
+    color: #fff;
+}
+
+.contact-details a {
+    color: #d0d0d0;
+    text-decoration: underline;
+}
+
+.contact-form-container {
+    flex: 1;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 2.5rem;
+}
+
+.contact-form .form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.contact-form .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.contact-form .form-row .form-group {
+    margin-bottom: 0;
+}
+
+.contact-form label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #eee;
+}
+
+.contact-form input,
+.contact-form textarea {
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.contact-form .submit-btn {
+    width: 100%;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.3s;
+}
+
+.contact-form .submit-btn:hover {
+    background: #ddd;
+}

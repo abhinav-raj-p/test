@@ -359,29 +359,27 @@ function animate() {
     let dashY = 0;
     let quoteY = h;
     let timelineY = h;
+    let contactY = h;
     
     // Timeline limits
     const quoteStart = maxDashScroll;
     const maxQuoteScroll = spacerQuote ? spacerQuote.scrollHeight : 0;
     const timelineStart = quoteStart + maxQuoteScroll;
     const maxTimelineScroll = spacerTimeline ? spacerTimeline.scrollHeight : 0;
+    const contactStart = timelineStart + maxTimelineScroll;
 
     // Simulated Native Scrolling Logic
     if (scrollY > quoteStart) {
-        // Push the previous fixed elements up
         const yOffset = -(scrollY - quoteStart);
         const currentTransform = dashboardSection.style.transform;
         dashboardSection.style.transform = `translateY(${yOffset}px) ` + currentTransform;
         whiteOverlay.style.transform = `translateY(${yOffset}px)`;
         canvas.style.transform = `translateY(${yOffset}px)`;
         
-        // Quote scrolls up from h
         quoteY = h - (scrollY - quoteStart);
-        // Stick at 0 while dome expands
         if (scrollY > quoteStart + h) {
             quoteY = 0;
         }
-        // Scroll up after quote sequence finishes
         if (scrollY > timelineStart) {
             quoteY = -(scrollY - timelineStart);
         }
@@ -391,17 +389,27 @@ function animate() {
     }
 
     if (scrollY > timelineStart) {
-        // Timeline scrolls up from h
         timelineY = h - (scrollY - timelineStart);
-        // Stick at 0 for the SVG animation to play out
         if (scrollY > timelineStart + h) {
             timelineY = 0;
+        }
+        if (scrollY > contactStart) {
+            timelineY = -(scrollY - contactStart);
+        }
+    }
+
+    if (scrollY > contactStart) {
+        contactY = h - (scrollY - contactStart);
+        if (scrollY > contactStart + h) {
+            contactY = 0;
         }
     }
 
     // Apply translations
     if (quoteSection) quoteSection.style.transform = `translateY(${quoteY}px)`;
     if (timelineSection) timelineSection.style.transform = `translateY(${timelineY}px)`;
+    const contactSection = document.getElementById('contact-section');
+    if (contactSection) contactSection.style.transform = `translateY(${contactY}px)`;
 
     // Calculate Quote Physics
     if (quoteSection) {
@@ -422,17 +430,13 @@ function animate() {
     // Calculate Timeline SVG Physics
     if (timelineSection && timelinePathFill && timelineDot) {
         const timelineSvg = document.getElementById('timeline-svg');
-        // SVG Animation plays after the section has stuck at 0 (scrollY > timelineStart + h)
         const animStart = timelineStart + h;
         const animScroll = maxTimelineScroll - h;
         let pTimeline = (scrollY - animStart) / animScroll;
         pTimeline = Math.min(Math.max(pTimeline, 0), 1);
         
-        // Use linear progress so the dot moves at a constant speed 
-        // and perfectly synchronizes with the SVG translation!
         const drawProgress = pTimeline;
         
-        // Translate SVG upwards natively, perfectly synced
         if (timelineSvg) {
             const svgHeight = timelineSvg.getBoundingClientRect().height;
             const maxSvgScroll = Math.max(0, svgHeight - h);
@@ -454,7 +458,6 @@ function animate() {
             timelineDot.setAttribute('opacity', '0');
         }
         
-        // Markers logic based on SVG curve lengths visually approximated
         document.getElementById('m-born').classList.toggle('active', drawProgress > 0.01);
         document.getElementById('m-22').classList.toggle('active', drawProgress > 0.25);
         document.getElementById('m-26').classList.toggle('active', drawProgress > 0.50);
@@ -467,3 +470,21 @@ function animate() {
 
 calculateLayout();
 animate();
+
+// Gmail Form Logic
+const gmailForm = document.getElementById('gmail-form');
+if (gmailForm) {
+    gmailForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const fname = document.getElementById('fname').value;
+        const lname = document.getElementById('lname').value;
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+        
+        const fullSubject = encodeURIComponent(subject);
+        const fullBody = encodeURIComponent(`From: ${fname} ${lname}\n\n${message}`);
+        
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=email@example.com&su=${fullSubject}&body=${fullBody}`;
+        window.open(gmailUrl, '_blank');
+    });
+}
