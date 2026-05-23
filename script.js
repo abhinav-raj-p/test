@@ -296,7 +296,10 @@ function updateScrollVisuals(p) {
     fadeElements.forEach(el => { el.style.opacity = fadeOp; });
     whiteOverlay.style.opacity = fadeOp;
     
-    if (p > 0.7) {
+    const currentScrollY = window.scrollY;
+    const currentMaxDashScroll = Math.max(1, window.innerHeight * 3);
+    
+    if (p > 0.7 && currentScrollY <= currentMaxDashScroll) {
         document.body.classList.add('scrolled');
     } else {
         document.body.classList.remove('scrolled');
@@ -530,17 +533,23 @@ if (chatFab && chatWindow) {
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
-            const response = await fetch('/api/chat', {
+            // Using Pollinations AI - a free, no-key text generation API
+            const response = await fetch('https://text.pollinations.ai/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text })
+                body: JSON.stringify({
+                    messages: [
+                        { role: 'system', content: 'You are a helpful assistant on Abhinav\'s portfolio website. Keep your answers brief, friendly, and professional.' },
+                        { role: 'user', content: text }
+                    ]
+                })
             });
 
             if (!response.ok) throw new Error('API Error');
-            const data = await response.json();
+            const replyText = await response.text(); // Pollinations returns raw text
             
             loadingDiv.remove();
-            appendMessage(data.reply, 'ai');
+            appendMessage(replyText, 'ai');
         } catch (error) {
             loadingDiv.remove();
             appendMessage('Sorry, I encountered an error connecting to the AI.', 'ai');

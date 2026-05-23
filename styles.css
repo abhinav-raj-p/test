@@ -659,6 +659,7 @@ body.scrolled .main-heading {
     display: flex;
     align-items: center;
     gap: 8px;
+    color:#00ffa2;
 }
 
 .pulse-dot {
@@ -710,6 +711,7 @@ body.scrolled .main-heading {
     border: 1px solid rgba(255, 255, 255, 0.1);
     align-self: flex-start;
     border-bottom-left-radius: 2px;
+    color: #ffffff;
 }
 
 .message.user-message {
