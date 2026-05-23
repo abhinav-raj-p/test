@@ -8,6 +8,16 @@ const dashboardSection = document.getElementById('dashboard-section');
 const miniRing = document.getElementById('mini-ring-target');
 const fadeElements = document.querySelectorAll('.fade-element');
 
+const quoteSection = document.getElementById('quote-section');
+const glowingDome = document.getElementById('glowing-dome');
+const quoteContent = document.getElementById('quote-content');
+const spacerQuote = document.getElementById('spacer-quote');
+
+const timelineSection = document.getElementById('timeline-section');
+const spacerTimeline = document.getElementById('spacer-timeline');
+const timelinePathFill = document.getElementById('timeline-fill');
+const timelineDot = document.getElementById('timeline-dot');
+
 // Global canvas setup
 let width, height, centerX, centerY;
 function resize() {
@@ -302,8 +312,12 @@ let globalRingAngle = 0;
 
 function animate() {
     const scrollY = window.scrollY;
-    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const p = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+    
+    // The original maxScroll was the body's scroll height when ONLY .spacer (400vh) existed.
+    // Therefore, the original maxScroll was 400vh - 100vh = 300vh.
+    const maxDashScroll = Math.max(1, window.innerHeight * 3);
+    
+    const p = Math.min(Math.max(scrollY / maxDashScroll, 0), 1);
     
     globalRingAngle += 0.015;
     
@@ -338,6 +352,115 @@ function animate() {
             part.drawInner(ctxInner, globalRingAngle);
         }
     });
+
+    // Sequence Architecture Math
+    const h = window.innerHeight;
+    
+    let dashY = 0;
+    let quoteY = h;
+    let timelineY = h;
+    
+    // Timeline limits
+    const quoteStart = maxDashScroll;
+    const maxQuoteScroll = spacerQuote ? spacerQuote.scrollHeight : 0;
+    const timelineStart = quoteStart + maxQuoteScroll;
+    const maxTimelineScroll = spacerTimeline ? spacerTimeline.scrollHeight : 0;
+
+    // Simulated Native Scrolling Logic
+    if (scrollY > quoteStart) {
+        // Push the previous fixed elements up
+        const yOffset = -(scrollY - quoteStart);
+        const currentTransform = dashboardSection.style.transform;
+        dashboardSection.style.transform = `translateY(${yOffset}px) ` + currentTransform;
+        whiteOverlay.style.transform = `translateY(${yOffset}px)`;
+        canvas.style.transform = `translateY(${yOffset}px)`;
+        
+        // Quote scrolls up from h
+        quoteY = h - (scrollY - quoteStart);
+        // Stick at 0 while dome expands
+        if (scrollY > quoteStart + h) {
+            quoteY = 0;
+        }
+        // Scroll up after quote sequence finishes
+        if (scrollY > timelineStart) {
+            quoteY = -(scrollY - timelineStart);
+        }
+    } else {
+        whiteOverlay.style.transform = `none`;
+        canvas.style.transform = `none`;
+    }
+
+    if (scrollY > timelineStart) {
+        // Timeline scrolls up from h
+        timelineY = h - (scrollY - timelineStart);
+        // Stick at 0 for the SVG animation to play out
+        if (scrollY > timelineStart + h) {
+            timelineY = 0;
+        }
+    }
+
+    // Apply translations
+    if (quoteSection) quoteSection.style.transform = `translateY(${quoteY}px)`;
+    if (timelineSection) timelineSection.style.transform = `translateY(${timelineY}px)`;
+
+    // Calculate Quote Physics
+    if (quoteSection) {
+        let pQuote = (scrollY - quoteStart) / maxQuoteScroll;
+        pQuote = Math.min(Math.max(pQuote, 0), 1);
+        
+        const easeQuote = Math.pow(pQuote, 2); 
+        const domeScale = 1 + (easeQuote * 4.5); 
+        const domeTy = 80 - (easeQuote * 60); 
+        
+        glowingDome.style.transform = `translateY(${domeTy}vh) scale(${domeScale})`;
+        
+        let textOpacity = 1 - ((pQuote - 0.4) / 0.3);
+        textOpacity = Math.min(Math.max(textOpacity, 0), 1);
+        quoteContent.style.opacity = textOpacity;
+    }
+    
+    // Calculate Timeline SVG Physics
+    if (timelineSection && timelinePathFill && timelineDot) {
+        const timelineSvg = document.getElementById('timeline-svg');
+        // SVG Animation plays after the section has stuck at 0 (scrollY > timelineStart + h)
+        const animStart = timelineStart + h;
+        const animScroll = maxTimelineScroll - h;
+        let pTimeline = (scrollY - animStart) / animScroll;
+        pTimeline = Math.min(Math.max(pTimeline, 0), 1);
+        
+        // Use linear progress so the dot moves at a constant speed 
+        // and perfectly synchronizes with the SVG translation!
+        const drawProgress = pTimeline;
+        
+        // Translate SVG upwards natively, perfectly synced
+        if (timelineSvg) {
+            const svgHeight = timelineSvg.getBoundingClientRect().height;
+            const maxSvgScroll = Math.max(0, svgHeight - h);
+            timelineSvg.style.transform = `translateY(-${drawProgress * maxSvgScroll}px)`;
+        }
+        
+        const pathLength = timelinePathFill.getTotalLength();
+        timelinePathFill.style.strokeDasharray = pathLength;
+        
+        const drawLength = pathLength * drawProgress;
+        timelinePathFill.style.strokeDashoffset = pathLength - drawLength;
+        
+        if (drawLength > 1) {
+            timelineDot.setAttribute('opacity', '1');
+            const point = timelinePathFill.getPointAtLength(drawLength);
+            timelineDot.setAttribute('cx', point.x);
+            timelineDot.setAttribute('cy', point.y);
+        } else {
+            timelineDot.setAttribute('opacity', '0');
+        }
+        
+        // Markers logic based on SVG curve lengths visually approximated
+        document.getElementById('m-born').classList.toggle('active', drawProgress > 0.01);
+        document.getElementById('m-22').classList.toggle('active', drawProgress > 0.25);
+        document.getElementById('m-26').classList.toggle('active', drawProgress > 0.50);
+        document.getElementById('m-31').classList.toggle('active', drawProgress > 0.75);
+        document.getElementById('m-41').classList.toggle('active', drawProgress > 0.98);
+    }
 
     requestAnimationFrame(animate);
 }

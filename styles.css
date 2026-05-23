@@ -342,3 +342,161 @@ body.scrolled .main-heading {
 }
 .metric-attachment .sub { color: #888; font-size: 0.6rem; }
 .metric-attachment .right { text-align: right; }
+
+/* Spacer for Quote Dome */
+.spacer-quote {
+    height: 300vh;
+    width: 100%;
+}
+
+/* Quote Section */
+.quote-section {
+    position: fixed;
+    top: 100vh; /* Initially below the screen! JS will pull it up */
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    z-index: 100;
+    will-change: transform;
+    pointer-events: none;
+}
+
+.quote-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    will-change: opacity;
+}
+
+.quote-heading {
+    font-size: 5.5rem;
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    color: #111;
+    margin-bottom: 2rem;
+}
+
+.quote-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #666;
+}
+
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.glowing-dome {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vw;
+    margin-left: -50vw;
+    margin-top: -50vw;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, 
+        #000000 0%, 
+        #000000 45%, 
+        #9d0000 55%, 
+        #ff2a00 65%, 
+        #ffb300 75%, 
+        rgba(255,255,255,0) 85%
+    );
+    filter: blur(50px);
+    will-change: transform;
+    z-index: 5;
+    transform: translateY(120vh) scale(1);
+}
+
+/* Spacer for Timeline */
+.spacer-timeline {
+    height: 600vh;
+    width: 100%;
+}
+
+/* Timeline Section */
+.timeline-section {
+    position: fixed;
+    top: 0; /* JS will translate it! */
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-dark);
+    z-index: 110;
+    will-change: transform;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.timeline-heading {
+    position: absolute;
+    top: 2vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: -2px;
+    color: #fff;
+    z-index: 10;
+}
+
+.timeline-svg {
+    position: absolute;
+    top: -15vh;
+    left: 0;
+    width: 100vw;
+    display: block;
+    will-change: transform;
+}
+
+.marker-content {
+    color: #fff;
+    opacity: 0.2;
+    transition: opacity 0.5s ease;
+}
+.marker-content h3 {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+    color: #fff;
+    font-weight: 500;
+}
+.marker-content p {
+    font-size: 13px;
+    color: #a0a0a0;
+    margin: 0;
+    line-height: 1.5;
+}
+.right-align {
+    text-align: right;
+}
+
+.t-marker.active .m-label {
+    fill: #ff4733;
+}
+.t-marker.active .marker-content {
+    opacity: 1;
+}
+.t-marker.active .m-line {
+    stroke-opacity: 0.5;
+}
+.m-label {
+    transition: fill 0.5s ease;
+}
+.m-line {
+    transition: stroke-opacity 0.5s ease;
+}
