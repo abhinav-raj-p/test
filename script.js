@@ -221,7 +221,11 @@ function calculateLayout() {
         const scaleY = (window.innerHeight * 0.85) / contentHeight;
         const scaleX = (window.innerWidth * 0.90) / contentWidth;
         
-        finalScale = Math.min(scaleX, scaleY, 1.0); // Never scale up beyond 1.0
+        if (window.innerWidth <= 768) {
+            finalScale = Math.min(scaleX, 1.0); // Ignore height on mobile to allow scrolling
+        } else {
+            finalScale = Math.min(scaleX, scaleY, 1.0); // Never scale up beyond 1.0
+        }
     }
     
     const screenCX = window.innerWidth / 2;
@@ -374,8 +378,11 @@ function animate() {
     // Simulated Native Scrolling Logic
     if (scrollY > quoteStart) {
         const yOffset = -(scrollY - quoteStart);
-        const currentTransform = dashboardSection.style.transform;
-        dashboardSection.style.transform = `translateY(${yOffset}px) ` + currentTransform;
+        
+        if (window.innerWidth > 768) {
+            const currentTransform = dashboardSection.style.transform;
+            dashboardSection.style.transform = `translateY(${yOffset}px) ` + currentTransform;
+        }
         whiteOverlay.style.transform = `translateY(${yOffset}px)`;
         canvas.style.transform = `translateY(${yOffset}px)`;
         
@@ -560,5 +567,24 @@ if (chatFab && chatWindow) {
     sendChat.addEventListener('click', handleSend);
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleSend();
+    });
+}
+
+// Hamburger Menu Logic
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('nav-links');
+
+if (hamburger && navLinks) {
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+
+    // Close menu when a link is clicked
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
     });
 }

@@ -458,7 +458,8 @@ body.scrolled .main-heading {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .contact-container {
@@ -757,3 +758,171 @@ body.scrolled .main-heading {
     transition: transform 0.2s;
 }
 #send-chat:hover { transform: scale(1.05); }
+
+/* Hamburger Menu Base (Desktop) */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 2000;
+    pointer-events: auto;
+}
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background-color: var(--text-light);
+    transition: 0.3s;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+    /* Navbar & Hamburger */
+    .navbar {
+        padding: 1.5rem 1.5rem;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .hamburger {
+        display: flex;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transition: right 0.3s ease;
+        z-index: 1500;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+    .nav-links.active {
+        right: 0;
+    }
+
+    /* Headings */
+    .main-heading {
+        font-size: 2.2rem;
+        margin-bottom: 1.5rem;
+        padding: 0 1rem;
+    }
+    .quote-heading {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
+    .timeline-heading {
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        padding: 0 1rem;
+    }
+
+    /* Bento Grid Dashboard (Stacked Mobile Layout) */
+    .dashboard-section {
+        position: relative !important;
+        height: auto !important;
+        padding-top: 15vh;
+        padding-bottom: 10vh;
+        transform: none !important;
+        pointer-events: auto; /* Always interactive on mobile */
+    }
+    .ipad-mockup {
+        border-radius: 0;
+        padding: 0;
+        width: 100vw;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+    }
+    .ipad-screen {
+        height: auto;
+        overflow-y: visible;
+        border-radius: 0;
+        padding: 16px;
+        background: transparent;
+    }
+    .bento-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .biomarkers-card {
+        grid-column: span 1;
+    }
+    .card-value.large {
+        font-size: 2.5rem;
+    }
+
+    /* Interactive Timeline SVG Adjustments */
+    .timeline-section {
+        padding-top: 5vh;
+    }
+    .timeline-svg {
+        width: 100vw;
+    }
+    /* We make the SVG text massively larger so when the SVG scales down, it remains readable */
+    .m-label {
+        font-size: 40px; /* Massively scale up font inside SVG */
+    }
+    .marker-content {
+        /* foreignObject content needs internal scaling */
+        font-size: 36px !important;
+        line-height: 1.2;
+    }
+    .marker-content h3 {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+    .marker-content p {
+        font-size: 32px;
+    }
+    /* Adjust foreign object sizes to fit larger text */
+    foreignObject {
+        width: 600px !important;
+        height: 300px !important;
+    }
+
+    /* Contact Section */
+    .contact-container {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem 1.5rem;
+        width: 95vw;
+        margin: auto;
+    }
+    .contact-info {
+        padding-right: 0;
+        text-align: center;
+    }
+    .contact-info ul {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Chatbot adjustments */
+    .chatbot-container {
+        bottom: 20px;
+        right: 20px;
+    }
+    .chat-window {
+        width: calc(100vw - 40px);
+        max-height: 70vh;
+    }
+}
