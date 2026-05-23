@@ -1,58 +1,61 @@
 export async function onRequestPost(context) {
     try {
-        // 1. Parse incoming user text from frontend
+        // 1. Extract the prompt sent from your portfolio UI frontend
         const body = await context.request.json();
         const userMessage = body.message;
 
-        // 2. Fall back to your raw tunnel link if configured, or use localhost for local testing
-        // Strip trailing slash if it exists, then append /api/chat safely
-        let base_url = context.env.OLLAMA_API_URL || 'http://localhost:11434';
-        if (base_url.endsWith('/')) base_url = base_url.slice(0, -1);
+        // 2. Grab your cloud keys from the secure production variables
+        const OLLAMA_API_KEY = context.env.OLLAMA_API_KEY;
+        const base_url = context.env.OLLAMA_API_URL || 'https://ollama.com';
         
-        // If your URL variable didn't already include the path, append it
-        const targetUrl = base_url.includes('/api/chat') ? base_url : `${base_url}/api/chat`;
+        // Construct the cloud target endpoint route
+        const targetUrl = `${base_url.replace(/\/$/, '')}/api/chat`;
 
-        // 3. Construct payload exactly how Ollama requires it
+        // Safety check: ensure your cloud variable is loading cleanly
+        if (!OLLAMA_API_KEY) {
+            return new Response(JSON.stringify({ reply: "Cloud Configuration Error: Missing OLLAMA_API_KEY in Cloudflare settings." }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // 3. Build the cloud payload payload using cloud-accessible models (e.g. llama3.2)
         const payload = {
-            model: context.env.OLLAMA_MODEL || "llama3.2:1b", // Matches your local model pull
+            model: context.env.OLLAMA_MODEL || "llama3.2", 
             messages: [
                 { 
                     role: "system", 
-                    content: "You are an AI assistant representing Abhinav, an MCA student and AI developer. Answer briefly and professionally about his projects like TruthLens and AI Study Buddy." 
+                    content: "You are a helpful portfolio assistant for Abhinav, an AI Developer and MCA student. Answer briefly and professionally." 
                 },
                 { role: "user", content: userMessage }
             ],
             stream: false
         };
 
-        // 4. Forward request through the tunnel straight to your machine
-        const headers = { 'Content-Type': 'application/json' };
-        
-        // Optional: If you ever decide to set a custom header key for your tunnel, include it here
-        if (context.env.OLLAMA_API_KEY) {
-            headers['Authorization'] = `Bearer ${context.env.OLLAMA_API_KEY}`;
-        }
-
+        // 4. Dispatch the request directly to Ollama's cloud infrastructure
         const ollamaResponse = await fetch(targetUrl, {
             method: 'POST',
-            headers: headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OLLAMA_API_KEY}`
+            },
             body: JSON.stringify(payload)
         });
 
         if (!ollamaResponse.ok) {
-            throw new Error(`Ollama API error status: ${ollamaResponse.status}`);
+            throw new Error(`Ollama Cloud responded with error code: ${ollamaResponse.status}`);
         }
 
         const ollamaData = await ollamaResponse.json();
-        const replyText = ollamaData.message?.content || "Sorry, I couldn't generate a response.";
+        const replyText = ollamaData.message?.content || "Sorry, I couldn't process a cloud response right now.";
 
-        // 5. Send the text output back to the UI
+        // 5. Send text stream response cleanly back to your portfolio UI component
         return new Response(JSON.stringify({ reply: replyText }), {
             headers: { 'Content-Type': 'application/json' }
         });
 
     } catch (error) {
-        return new Response(JSON.stringify({ reply: `Error connecting to your machine: ${error.message}` }), {
+        return new Response(JSON.stringify({ reply: `Cloud Connection Error: ${error.message}` }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });
