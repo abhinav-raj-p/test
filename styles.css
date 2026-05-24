@@ -864,36 +864,74 @@ body.scrolled .main-heading {
         font-size: 2.5rem;
     }
 
-    /* Interactive Timeline SVG Adjustments */
+    /* Disable all spacers on mobile */
+    .spacer, .spacer-quote, .spacer-timeline, .spacer-contact {
+        display: none !important;
+    }
+
+    /* Reset All Sections to Natural Flow */
+    .quote-section, .timeline-section, .contact-section {
+        position: relative !important;
+        transform: none !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding: 4rem 0 !important;
+    }
     .timeline-section {
-        padding-top: 5vh;
+        overflow-x: auto !important; /* Enable horizontal scroll for SVG */
+        pointer-events: auto !important;
+    }
+
+    /* Glowing Dome Reset */
+    .glowing-dome {
+        position: relative !important;
+        transform: none !important;
+        width: 150vw !important;
+        height: 150vw !important;
+        margin: 0 auto !important;
+        left: -25vw !important;
+        top: 0 !important;
+    }
+
+    /* Interactive Timeline SVG Adjustments */
+    .timeline-heading {
+        position: relative !important;
+        top: 0 !important;
+        margin-bottom: 2rem !important;
     }
     .timeline-svg {
-        width: 100vw;
+        position: relative !important;
+        width: 250vw !important;
+        max-width: none;
+        top: 0 !important;
+        transform: none !important;
     }
     /* We make the SVG text massively larger so when the SVG scales down, it remains readable */
     .m-label {
-        font-size: 40px; /* Massively scale up font inside SVG */
+        font-size: 32px; /* Adjusted font size */
     }
     .marker-content {
         /* foreignObject content needs internal scaling */
-        font-size: 36px !important;
+        font-size: 30px !important;
         line-height: 1.2;
     }
     .marker-content h3 {
-        font-size: 48px;
+        font-size: 40px;
         margin-bottom: 10px;
     }
     .marker-content p {
-        font-size: 32px;
+        font-size: 26px;
     }
     /* Adjust foreign object sizes to fit larger text */
     foreignObject {
-        width: 600px !important;
+        width: 500px !important;
         height: 300px !important;
     }
 
     /* Contact Section */
+    .contact-section {
+        align-items: center !important; 
+    }
     .contact-container {
         flex-direction: column;
         gap: 2rem;
