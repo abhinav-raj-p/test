@@ -864,47 +864,16 @@ body.scrolled .main-heading {
         font-size: 2.5rem;
     }
 
-    /* Disable all spacers on mobile */
-    .spacer, .spacer-quote, .spacer-timeline, .spacer-contact {
-        display: none !important;
-    }
-
-    /* Reset All Sections to Natural Flow */
-    .quote-section, .timeline-section, .contact-section {
-        position: relative !important;
-        transform: none !important;
-        height: auto !important;
-        overflow: visible !important;
-        padding: 4rem 0 !important;
-    }
-    .timeline-section {
-        overflow-x: auto !important; /* Enable horizontal scroll for SVG */
-        pointer-events: auto !important;
-    }
-
-    /* Glowing Dome Reset */
-    .glowing-dome {
-        position: relative !important;
-        transform: none !important;
-        width: 150vw !important;
-        height: 150vw !important;
-        margin: 0 auto !important;
-        left: -25vw !important;
-        top: 0 !important;
-    }
-
     /* Interactive Timeline SVG Adjustments */
-    .timeline-heading {
-        position: relative !important;
-        top: 0 !important;
-        margin-bottom: 2rem !important;
+    .timeline-section {
+        padding-top: 5vh;
+        overflow-x: auto;
+        pointer-events: auto; /* Enable touch scrolling */
     }
     .timeline-svg {
-        position: relative !important;
-        width: 250vw !important;
+        width: 160vw; /* Force horizontal overflow */
         max-width: none;
-        top: 0 !important;
-        transform: none !important;
+        top: 5vh !important; /* Move SVG down so 'Born' is visible */
     }
     /* We make the SVG text massively larger so when the SVG scales down, it remains readable */
     .m-label {
@@ -930,7 +899,8 @@ body.scrolled .main-heading {
 
     /* Contact Section */
     .contact-section {
-        align-items: center !important; 
+        align-items: flex-start !important; /* Fix centering cutoff on mobile */
+        padding-top: 4rem; /* Add breathing room at top */
     }
     .contact-container {
         flex-direction: column;
