@@ -419,7 +419,13 @@ function animate() {
     if (quoteSection) quoteSection.style.transform = `translateY(${quoteY}px)`;
     if (timelineSection) timelineSection.style.transform = `translateY(${timelineY}px)`;
     const contactSection = document.getElementById('contact-section');
-    if (contactSection) contactSection.style.transform = `translateY(${contactY}px)`;
+    if (contactSection) {
+        if (contactY === 0) {
+            contactSection.style.transform = 'none';
+        } else {
+            contactSection.style.transform = `translateY(${contactY}px)`;
+        }
+    }
 
     // Calculate Quote Physics
     if (quoteSection) {

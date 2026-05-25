@@ -780,6 +780,65 @@ body.scrolled .main-heading {
 
 /* MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
+    /* Complete Mobile Native Scroll Overrides */
+    .spacer, .spacer-quote, .spacer-timeline, .spacer-contact, .white-overlay {
+        display: none !important;
+    }
+    
+    .dashboard-section, .quote-section, .timeline-section, .contact-section {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100vw !important;
+        height: auto !important;
+        min-height: auto !important;
+        transform: none !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        padding: 4rem 1.5rem !important;
+        background: transparent;
+    }
+
+    .quote-section {
+        background: #ffffff !important;
+        color: #111 !important;
+    }
+    
+    .glowing-dome {
+        display: none !important;
+    }
+    
+    .timeline-section {
+        background: var(--bg-dark) !important;
+    }
+    
+    .timeline-svg {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        height: auto !important;
+        width: 100% !important;
+        display: block !important;
+    }
+    
+    .timeline-path-fill {
+        stroke-dashoffset: 0 !important;
+    }
+    
+    .marker-content {
+        opacity: 1 !important;
+    }
+    
+    .t-marker .m-label {
+        fill: #ff4733 !important;
+    }
+    
+    .t-marker .m-line {
+        stroke-opacity: 0.5 !important;
+    }
+
     /* Navbar & Hamburger */
     .navbar {
         padding: 1.5rem 1.5rem;
@@ -830,14 +889,6 @@ body.scrolled .main-heading {
     }
 
     /* Bento Grid Dashboard (Stacked Mobile Layout) */
-    .dashboard-section {
-        position: relative !important;
-        height: auto !important;
-        padding-top: 15vh;
-        padding-bottom: 10vh;
-        transform: none !important;
-        pointer-events: auto; /* Always interactive on mobile */
-    }
     .ipad-mockup {
         border-radius: 0;
         padding: 0;
@@ -863,14 +914,8 @@ body.scrolled .main-heading {
     .card-value.large {
         font-size: 2.5rem;
     }
-
+ 
     /* Interactive Timeline SVG Adjustments */
-    .timeline-section {
-        padding-top: 5vh;
-    }
-    .timeline-svg {
-        width: 100vw;
-    }
     /* We make the SVG text massively larger so when the SVG scales down, it remains readable */
     .m-label {
         font-size: 40px; /* Massively scale up font inside SVG */
@@ -892,18 +937,36 @@ body.scrolled .main-heading {
         width: 600px !important;
         height: 300px !important;
     }
-
-    /* Contact Section */
+ 
+    /* Contact Section Mobile Styles */
+    .contact-section {
+        background: #0a0a0a !important;
+        padding-bottom: 8rem !important; /* Extra padding for chatbot fab */
+    }
     .contact-container {
         flex-direction: column;
-        gap: 2rem;
-        padding: 2rem 1.5rem;
-        width: 95vw;
-        margin: auto;
+        gap: 1.5rem;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
     }
     .contact-info {
         padding-right: 0;
         text-align: center;
+    }
+    .contact-info h2 {
+        font-size: 2.2rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .contact-info p {
+        font-size: 0.95rem !important;
+        margin-bottom: 1.5rem !important;
+        max-width: 100%;
+    }
+    .contact-details h3 {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.75rem !important;
     }
     .contact-info ul {
         align-items: center;
@@ -911,9 +974,16 @@ body.scrolled .main-heading {
         display: flex;
         flex-direction: column;
     }
+    .contact-form-container {
+        padding: 1.5rem !important;
+        border-radius: 8px !important;
+    }
     .form-row {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1.2rem;
+    }
+    .contact-form .form-group {
+        margin-bottom: 1.2rem;
     }
 
     /* Chatbot adjustments */
